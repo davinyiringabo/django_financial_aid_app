@@ -1,0 +1,65 @@
+{% extends 'financial_aid/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body p-4">
+                <h2 class="text-center mb-4">
+                    <i class="fas fa-file-alt me-2"></i>Financial Aid Application
+                </h2>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Academic Year</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                            {{ form.academic_year }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Requested Amount ($)</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-dollar-sign"></i>
+                            </span>
+                            {{ form.requested_amount }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Purpose</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-align-left"></i>
+                            </span>
+                            {{ form.purpose }}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Supporting Documents</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-paperclip"></i>
+                            </span>
+                            {{ form.supporting_documents }}
+                        </div>
+                        <small class="text-muted">Upload relevant documents (PDF, DOC, DOCX)</small>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i>Submit Application
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

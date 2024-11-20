@@ -1,0 +1,191 @@
+{% extends 'financial_aid/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-user-tie me-2"></i>Manage Managers
+                    </h4>
+                    <a href="{% url 'register_manager' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Add New Manager
+                    </a>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <h6 class="card-title">Total Managers</h6>
+                                <h2 class="mb-0">{{ managers.count }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <h6 class="card-title">Active Managers</h6>
+                                <h2 class="mb-0">{{ active_managers }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-danger text-white">
+                            <div class="card-body">
+                                <h6 class="card-title">Inactive Managers</h6>
+                                <h2 class="mb-0">{{ inactive_managers }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="text" class="form-control" id="searchManagers" placeholder="Search managers...">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" id="statusFilter">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Managers Table -->
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Last Login</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for manager in managers %}
+                            <tr>
+                                <td>{{ manager.get_full_name }}</td>
+                                <td>{{ manager.username }}</td>
+                                <td>{{ manager.email }}</td>
+                                <td>
+                                    {% if manager.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if manager.last_login %}
+                                    {{ manager.last_login|date:"M d, Y H:i" }}
+                                    {% else %}
+                                    Never
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                data-bs-toggle="modal" data-bs-target="#viewModal{{ manager.id }}">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <form method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="manager_id" value="{{ manager.id }}">
+                                            {% if manager.is_active %}
+                                            <button type="submit" name="action" value="deactivate" 
+                                                    class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-ban"></i>
+                                            </button>
+                                            {% else %}
+                                            <button type="submit" name="action" value="activate" 
+                                                    class="btn btn-sm btn-outline-success">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            {% endif %}
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <nav class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if managers.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ managers.previous_page_number }}">Previous</a>
+                        </li>
+                        {% endif %}
+                        
+                        <li class="page-item active">
+                            <span class="page-link">{{ managers.number }} of {{ managers.paginator.num_pages }}</span>
+                        </li>
+                        
+                        {% if managers.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ managers.next_page_number }}">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Manager Modal -->
+{% for manager in managers %}
+<div class="modal fade" id="viewModal{{ manager.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Manager Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <h6>Personal Information</h6>
+                    <p><strong>Name:</strong> {{ manager.get_full_name }}</p>
+                    <p><strong>Username:</strong> {{ manager.username }}</p>
+                    <p><strong>Email:</strong> {{ manager.email }}</p>
+                </div>
+                <div class="mb-3">
+                    <h6>Account Status</h6>
+                    <p><strong>Status:</strong> 
+                        {% if manager.is_active %}
+                        <span class="badge bg-success">Active</span>
+                        {% else %}
+                        <span class="badge bg-danger">Inactive</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>Date Joined:</strong> {{ manager.date_joined|date:"M d, Y" }}</p>
+                    <p><strong>Last Login:</strong> 
+                        {% if manager.last_login %}
+                        {{ manager.last_login|date:"M d, Y H:i" }}
+                        {% else %}
+                        Never
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %} 

@@ -1,0 +1,89 @@
+{% extends 'financial_aid/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h4 class="card-title">Application Details</h4>
+                <hr>
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <p><strong>Student Name:</strong> {{ application.student.user.get_full_name }}</p>
+                        <p><strong>Student ID:</strong> {{ application.student.student_id }}</p>
+                        <p><strong>Academic Year:</strong> {{ application.academic_year }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Application Date:</strong> {{ application.application_date|date:"M d, Y" }}</p>
+                        <p><strong>Requested Amount:</strong> ${{ application.requested_amount }}</p>
+                        <p><strong>Status:</strong> 
+                            <span class="status-badge status-{{ application.status }}">
+                                {{ application.get_status_display }}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <h5>Purpose</h5>
+                <p class="mb-4">{{ application.purpose }}</p>
+
+                <h5>Supporting Documents</h5>
+                <a href="{{ application.supporting_documents.url }}" class="btn btn-outline-primary btn-sm" target="_blank">
+                    <i class="fas fa-download me-2"></i>View Document
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Review Decision</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select name="status" class="form-select" required>
+                            <option value="">Select decision</option>
+                            <option value="approved">Approve</option>
+                            <option value="rejected">Reject</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Review Notes</label>
+                        <textarea name="notes" class="form-control" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-check-circle me-2"></i>Submit Review
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Review Guidelines</h5>
+                <hr>
+                <ul class="list-unstyled">
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Verify all required documents
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Check eligibility criteria
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Assess financial need
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Provide detailed feedback
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
