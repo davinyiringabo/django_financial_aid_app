@@ -3,9 +3,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib import messages
 from django.utils import timezone
+from django.core.paginator import Paginator
 from .forms import StudentRegistrationForm, ManagerRegistrationForm, FinancialAidApplicationForm
 from .models import FinancialAidApplication, User
 from .decorators import admin_required, manager_required, student_required
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
+import json
+from datetime import datetime, timedelta
 
 def student_register(request):
     if request.method == 'POST':
@@ -117,12 +122,35 @@ def student_dashboard(request):
 @login_required
 @manager_required
 def manager_dashboard(request):
-    applications = FinancialAidApplication.objects.all()
+    applications_list = FinancialAidApplication.objects.all().order_by('-application_date')
+    
+    # Pagination
+    paginator = Paginator(applications_list, 10)
+    page = request.GET.get('page')
+    applications = paginator.get_page(page)
+    
+    # Get monthly application counts for the last 6 months
+    six_months_ago = datetime.now() - timedelta(days=180)
+    monthly_stats = (
+        applications_list
+        .filter(application_date__gte=six_months_ago)
+        .annotate(month=TruncMonth('application_date'))
+        .values('month')
+        .annotate(count=Count('id'))
+        .order_by('month')
+    )
+    
+    # Prepare data for charts
+    monthly_labels = [stat['month'].strftime('%B %Y') for stat in monthly_stats]
+    monthly_data = [stat['count'] for stat in monthly_stats]
+    
     context = {
         'applications': applications,
-        'pending_count': applications.filter(status='pending').count(),
-        'approved_count': applications.filter(status='approved').count(),
-        'rejected_count': applications.filter(status='rejected').count(),
+        'pending_count': applications_list.filter(status='pending').count(),
+        'approved_count': applications_list.filter(status='approved').count(),
+        'rejected_count': applications_list.filter(status='rejected').count(),
+        'monthly_labels': json.dumps(monthly_labels),
+        'monthly_data': monthly_data,
     }
     return render(request, 'financial_aid/manager_dashboard.html', context)
 
