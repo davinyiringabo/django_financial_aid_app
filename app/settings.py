@@ -40,6 +40,7 @@ AUTH_USER_MODEL = 'financial_aid.User'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = 'login'
+PORT= 8001
 # Application definition
 
 INSTALLED_APPS = [

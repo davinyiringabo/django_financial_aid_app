@@ -161,14 +161,18 @@ def admin_dashboard(request):
     managers = User.objects.filter(user_type='manager')
     students = User.objects.filter(user_type='student')
     
+    pending_count = applications.filter(status='pending').count()
+    approved_count = applications.filter(status='approved').count()
+    rejected_count = applications.filter(status='rejected').count()
+    
     context = {
         'applications': applications,
         'managers': managers,
         'active_managers': managers.filter(is_active=True).count(),
         'inactive_managers': managers.filter(is_active=False).count(),
         'student_count': students.count(),
-        'pending_count': applications.filter(status='pending').count(),
-        'approved_count': applications.filter(status='approved').count(),
-        'rejected_count': applications.filter(status='rejected').count(),
+        'pending_count': pending_count,
+        'approved_count': approved_count,
+        'rejected_count': rejected_count,
     }
     return render(request, 'financial_aid/admin_dashboard.html', context) 

@@ -38,6 +38,30 @@
             </div>
         </div>
     </div>
+
+    <!-- Add Charts Row -->
+    <div class="row mb-4">
+        <!-- Pie Chart -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Application Status Distribution</h5>
+                    <canvas id="statusPieChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bar Chart -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Monthly Applications</h5>
+                    <canvas id="monthlyBarChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Applications Table -->
     <div class="col-12">
         <div class="card">
@@ -187,11 +211,11 @@ document.addEventListener('DOMContentLoaded', function() {
         data: {
             labels: ['Pending', 'Approved', 'Rejected'],
             datasets: [{
-                data: [{{ pending_count }}, {{ approved_count }}, {{ rejected_count }}],
+                data: [{ pending_count }, { approved_count }, { rejected_count }],
                 backgroundColor: [
-                    '#ffc107',
-                    '#28a745',
-                    '#dc3545'
+                    '#ffc107', // warning yellow for pending
+                    '#28a745', // success green for approved
+                    '#dc3545'  // danger red for rejected
                 ],
                 borderWidth: 1
             }]
@@ -211,10 +235,10 @@ document.addEventListener('DOMContentLoaded', function() {
     new Chart(monthlyCtx, {
         type: 'bar',
         data: {
-            labels: {{ monthly_labels|safe }},
+            labels: { monthly_labels },
             datasets: [{
                 label: 'Number of Applications',
-                data: {{ monthly_data|safe }},
+                data: {monthly_data },
                 backgroundColor: '#0d6efd',
                 borderWidth: 1
             }]

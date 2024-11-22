@@ -22,4 +22,4 @@ urlpatterns = [
     path('applications/create/', views.apply_for_aid, name='apply_for_aid'),
     path('applications/review/<int:application_id>/', views.review_application, name='review_application'),
     path('applications/list/', views.manage_applications, name='manage_applications'),
-] 
+]

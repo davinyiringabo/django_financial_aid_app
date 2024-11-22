@@ -23,7 +23,7 @@
         <div class="card bg-warning text-white mb-4">
             <div class="card-body">
                 <h5 class="card-title">Pending Applications</h5>
-                <h2 class="mb-0">{{ applications.filter.status.pending.count }}</h2>
+                <h2 class="mb-0">{{ pending_count }}</h2>
             </div>
         </div>
     </div>
@@ -35,7 +35,6 @@
             </div>
         </div>
     </div>
-
     <!-- Quick Actions -->
     <div class="col-md-4">
         <div class="card mb-4">
@@ -102,9 +101,15 @@
                                 <td>{{ application.application_date|date:"M d, Y" }}</td>
                                 <td>${{ application.requested_amount }}</td>
                                 <td>
-                                    <span class="badge bg-{{ application.status }}">
-                                        {{ application.get_status_display }}
-                                    </span>
+                                    {% if application.status == 'pending' %}
+                                        <span class="badge bg-warning">{{ application.get_status_display }}</span>
+                                    {% elif application.status == 'approved' %}
+                                        <span class="badge bg-success">{{ application.get_status_display }}</span>
+                                    {% elif application.status == 'rejected' %}
+                                        <span class="badge bg-danger">{{ application.get_status_display }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ application.get_status_display }}</span>
+                                    {% endif %}
                                 </td>
                                 <td>
                                     <button class="btn btn-sm btn-primary" data-bs-toggle="modal" 
@@ -167,5 +172,53 @@
         </div>
     </div>
 </div>
+
 {% endfor %}
+    <!-- Add this new section after the statistics cards and before Quick Actions -->
+    <div class="col-12 my-4 mb-10">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Application Statistics</h5>
+                <div style="height: 300px;">
+                    <canvas id="applicationChart"></canvas>
+                </div>
+            </div>
+        </div>
+</div>
+
+<!-- Add this script section at the bottom of the content block -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('applicationChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Pending', 'Approved', 'Rejected'],
+                datasets: [{
+                    data: [
+                        {{ pending_count }},
+                        {{ approved_count }},
+                        {{ rejected_count }}
+                    ],
+                    backgroundColor: [
+                        '#ffc107', // warning color for pending
+                        '#28a745', // success color for approved
+                        '#dc3545'  // danger color for rejected
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    });
+</script>
 {% endblock %} 
