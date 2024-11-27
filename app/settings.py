@@ -90,7 +90,7 @@ WSGI_APPLICATION = 'app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'financial_aid_db',
+        'NAME': 'financial_aid',
         'USER': 'postgres',
         'PASSWORD': 'anny',
         'HOST': 'localhost',

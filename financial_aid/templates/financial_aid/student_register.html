@@ -80,6 +80,58 @@
                             {% endif %}
                         </div>
 
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Economic Status</label> 
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-wheelchair"></i></span>
+                                <select class="form-select" name="disability_status" aria-label="Disability Status">
+                                    <option value="" selected>Select Status</option>
+                                    <option value="poor">Poor</option>
+                                    <option value="middle">Middle</option>
+                                    <option value="rich">Rich</option>
+                                </select>
+                            </div>
+                            {% if form.disability_status.errors %}
+                                <div class="text-danger">{{ form.disability_status.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Disability Status</label> 
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-wheelchair"></i></span>
+                                <select class="form-select" name="disability_status" aria-label="Disability Status">
+                                    <option value="" selected>Select Status</option>
+                                    <option value="not_disabled">Not Disabled</option>
+                                    <option value="disabled">Disabled</option>
+                                </select>
+                            </div>
+                            {% if form.disability_status.errors %}
+                                <div class="text-danger">{{ form.disability_status.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Age</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                {{ form.age }}
+                            </div>
+                            {% if form.age.errors %}
+                                <div class="text-danger">{{ form.age.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Location</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                {{ form.location }}
+                            </div>
+                            {% if form.location.errors %}
+                                <div class="text-danger">{{ form.location.errors }}</div>
+                            {% endif %}
+                        </div>
+
                         <div class="col-12 mb-3">
                             <label class="form-label">Phone Number</label>
                             <div class="input-group">

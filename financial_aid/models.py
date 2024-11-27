@@ -16,10 +16,24 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
 
 class Student(models.Model):
+    ECONOMIC_STATUS = (
+        ('poor', 'poor'),
+        ('middle', 'middle'),
+        ('rich', 'rich'),
+    )
+    DISABILITY_STATUS = (
+        ('not_disabled', 'not_disabled'),
+        ('disabled', 'disabled'),
+    )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     student_id = models.CharField(max_length=20, unique=True)
     date_of_birth = models.DateField()
     phone_number = models.CharField(max_length=15)
+    age = models.IntegerField()
+    school = models.CharField(max_length=100)
+    location = models.CharField(max_length=100)
+    economic_status = models.CharField(choices=ECONOMIC_STATUS, default='poor')
+    disability_status = models.CharField(choices=DISABILITY_STATUS, default='not_disabled')
     
     def __str__(self):
         return f"{self.user.get_full_name()} - {self.student_id}"

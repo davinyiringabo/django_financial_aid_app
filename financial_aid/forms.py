@@ -6,7 +6,11 @@ class StudentRegistrationForm(UserCreationForm):
     student_id = forms.CharField(max_length=20)
     date_of_birth = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     phone_number = forms.CharField(max_length=15)
-
+    age = forms.IntegerField()
+    school = forms.CharField(max_length=100)
+    location = forms.CharField(max_length=100)
+    economic_status = forms.ChoiceField(choices=Student.ECONOMIC_STATUS)
+    disability_status = forms.ChoiceField(choices=Student.DISABILITY_STATUS)
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'student_id', 

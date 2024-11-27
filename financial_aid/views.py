@@ -27,6 +27,7 @@ def student_register(request):
 def register_manager(request):
     if request.method == 'POST':
         form = ManagerRegistrationForm(request.POST)
+        print('Register', form)
         if form.is_valid():
             form.save()
             messages.success(request, 'Manager account created successfully')
